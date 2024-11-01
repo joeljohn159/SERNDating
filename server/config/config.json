@@ -1,0 +1,8 @@
+{
+  "DB_NAME": "dating-app",
+  "DB_USER": "root",
+  "DB_PASSWORD": "root",
+  "DB_HOST": "localhost",
+  "DB_DIALECT": "mysql",
+  "JWT_SECRET_KEY": "!my-jwt-secret!*%-key"
+}
