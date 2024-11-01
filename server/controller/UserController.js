@@ -83,76 +83,11 @@ const getUserData = async (req, res) => {
     }
 };
 
-const forgotPassword = async (req, res) => {
-    try {
-        const { email } = req.body;
 
-        const user = await User.findOne({ where: { email } });
 
-        if (!user) {
-            return res.status(404).json({
-                msg: 'User not found',
-                status: APP_CONSTANTS.OPERATION_FAILED,
-            });
-        }
-
-        const resetToken = jwt.sign(
-            { id: user.id, email: user.email },
-            configData.JWT_SECRET_KEY,
-            {
-                expiresIn: '1h',
-            }
-        );
-
-        const resetLink = `http://localhost:8080/users/reset-password?token=${resetToken}`;
-        const subject = 'Password Reset Request';
-        const text = `Hello, You requested to reset your password. Click the link below to reset it:\n\n${resetLink}\n\nIf you did not request this, please ignore this email.`;
-
-        await sendEmail(email, subject, text);
-
-        return res.status(200).json({
-            msg: 'Password reset link sent to email',
-            status: APP_CONSTANTS.OPERATION_SUCCESS,
-        });
-    } catch (error) {
-        return catchErrors(error, res);
-    }
-};
-
-const resetPassword = async (req, res) => {
-    try {
-        const { token, newPassword } = req.body;
-
-        const decoded = jwt.verify(token, configData.JWT_SECRET_KEY);
-        const userId = decoded.id;
-
-        const user = await User.findByPk(userId);
-        if (!user) {
-            return res.status(404).json({ msg: 'User not found', status: 'FAILED' });
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashPassword = bcrypt.hashSync(newPassword, salt);
-
-        user.password = hashPassword;
-        await user.save();
-
-        return res.status(200).json({
-            msg: 'Password reset successful',
-            status: APP_CONSTANTS.OPERATION_SUCCESS,
-        });
-    } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            return res.status(400).json({ msg: 'Token expired', status: 'FAILED' });
-        }
-        return catchErrors(error, res);
-    }
-};
 
 export default {
     createUser,
     loginUser,
     getUserData,
-    forgotPassword,
-    resetPassword,
 };
