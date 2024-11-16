@@ -6,6 +6,8 @@ import userRouter from './router/UserRouter.js';
 import profileRouter from './router/ProfileRouter.js';
 import preferenceRouter from './router/PreferenceRouter.js';
 import subscriptionRouter from "./router/subscriptionRouter.js";
+import interestRouter from "./router/interestRouter.js";
+
 const corsOptions = {
     origin: "http://localhost:5173"
 } 
@@ -34,6 +36,7 @@ app.use('/users', userRouter);
 app.use('/profiles', profileRouter);
 app.use('/preferences', preferenceRouter);
 app.use('/subscriptions',subscriptionRouter);
+app.use('/interests',interestRouter)
 
 app.get('/api',(req, res)=>{
     res.json({1:['apple','ball','cat']})
