@@ -3,6 +3,7 @@ const app = express();
 import cors from 'cors';
 import sequelize from './db/sequelize.js';
 import userRouter from './router/UserRouter.js';
+import profileRouter from './router/ProfileRouter.js';
 
 const corsOptions = {
     origin: "http://localhost:5173"
@@ -22,13 +23,14 @@ sequelize
     });
 
 // create db Tables
-sequelize.sync().then(() => {
+sequelize.sync({ force: true }).then(() => {
     console.log('Table created successfully!');
 }).catch((error) => {
     console.error('Unable to create table : ', error);
 });
 
 app.use('/users', userRouter);
+app.use('/profiles', profileRouter);
 
 app.get('/api',(req, res)=>{
     res.json({1:['apple','ball','cat']})
