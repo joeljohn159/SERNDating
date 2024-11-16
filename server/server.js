@@ -23,7 +23,7 @@ sequelize
     });
 
 // create db Tables
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync().then(() => {
     console.log('Table created successfully!');
 }).catch((error) => {
     console.error('Unable to create table : ', error);
