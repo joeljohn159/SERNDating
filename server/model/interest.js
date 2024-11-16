@@ -10,4 +10,11 @@ const Interest = sequelize.define('interests', {
     },
 });
 
+Interest.associate = (models) => {
+    Interest.belongsToMany(models.Profile, {
+        through: 'profileinterests', // Join table name
+        as: 'profiles',             // Alias for the association
+        foreignKey: 'interest_id',
+    });
+};
 export default Interest;

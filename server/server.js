@@ -8,6 +8,9 @@ import preferenceRouter from './router/PreferenceRouter.js';
 import subscriptionRouter from "./router/subscriptionRouter.js";
 import interestRouter from "./router/interestRouter.js";
 import profileInterestRouter from "./router/profileInterestRouter.js";
+import matchRouter from "./router/matchRouter.js";
+import Profile from "./model/profile.js";
+import Interest from "./model/interest.js";
 
 const corsOptions = {
     origin: "http://localhost:5173"
@@ -27,6 +30,11 @@ sequelize
     });
 
 // create db Tables
+
+Profile.associate({Interest})
+Interest.associate({Profile})
+
+//await sequelize.query('SET FOREIGN_KEY_CHECKS = 0;')
 sequelize.sync().then(() => {
     console.log('Table created successfully!');
 }).catch((error) => {
@@ -39,6 +47,7 @@ app.use('/preferences', preferenceRouter);
 app.use('/subscriptions',subscriptionRouter);
 app.use('/interests',interestRouter)
 app.use('/profile-interests',profileInterestRouter)
+app.use('/matches',matchRouter)
 
 app.get('/api',(req, res)=>{
     res.json({1:['apple','ball','cat']})
