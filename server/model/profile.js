@@ -38,4 +38,12 @@ const Profile = sequelize.define('profiles', {
 User.hasOne(Profile, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Profile.belongsTo(User, { foreignKey: 'userId' });
 
+
+Profile.associate = (models) => {
+    Profile.belongsToMany(models.Interest, {
+        through: 'profileinterests', // Join table name
+        as: 'interests',            // Alias for the association
+        foreignKey: 'profile_id',
+    });
+};
 export default Profile;

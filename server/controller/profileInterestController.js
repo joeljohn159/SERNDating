@@ -50,6 +50,7 @@ const getInterestsByProfile = async (req, res) => {
             //         attributes: [] // Exclude the join table (profile_interests)
             //     }
             // }
+            {as: 'interests'}
         );
 
         return res.status(200).json({
