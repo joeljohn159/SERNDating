@@ -14,9 +14,8 @@ import { Op } from 'sequelize';
  * 5. If no matches are found, an empty array is returned.
  * 6. If a match is found, the matched profiles are returned with success status and the match data.
  */
-const findMatches = async (req, res) => {
-    try {
-        const { profile_id } = req.body;
+const findMatchesForProfile = async (profile_id) => {
+
         console.log(`Received profile_id: ${profile_id}`);
 
         // Fetch the profile of the user
@@ -29,10 +28,7 @@ const findMatches = async (req, res) => {
 
         if (!profile) {
             console.error(`Profile not found for profile_id: ${profile_id}`);
-            return res.status(404).json({
-                msg: 'Profile not found!',
-                status: 'FAILED',
-            });
+            throw new Error('Profile not found!')
         }
 
         console.log(`Profile retrieved: ${JSON.stringify(profile)}`);
@@ -60,11 +56,6 @@ const findMatches = async (req, res) => {
 
         if (matchedProfiles.length === 0) {
             console.log('No matches found.');
-            return res.status(200).json({
-                msg: 'No matches found!',
-                status: 'SUCCESS',
-                data: [],
-            });
         }
 
         console.log(`Matched profiles: ${JSON.stringify(matchedProfiles)}`);
@@ -82,19 +73,8 @@ const findMatches = async (req, res) => {
 
         console.log('Matches saved successfully.');
 
-        return res.status(200).json({
-            msg: 'Matches found and saved!',
-            status: 'SUCCESS',
-            data: matchedProfiles,
-        });
-    } catch (error) {
-        console.error(`Error in findMatches: ${error.message}`);
-        return res.status(500).json({
-            msg: 'Server error!',
-            data: error.message,
-            status: 'FAILED',
-        });
-    }
+        return matchedProfiles;
+
 };
 /**
  * Function to get all matches for a specific profile.
@@ -112,6 +92,8 @@ const findMatches = async (req, res) => {
 const getMatches = async (req, res) => {
     try {
         const { profile_id } = req.params;
+
+        await findMatchesForProfile(profile_id);
 
         // Find matches where the given profile is either the profile or the match_profile
         const matches = await Match.findAll({
@@ -165,26 +147,9 @@ const getMatches = async (req, res) => {
 
 
 // Export the functions
-export { findMatches, getMatches };
+export {getMatches };
 
 
 
 
 
-
-/**
-* *******findMatches Function:
-
-Fetches a user's profile and potential matches by their common interests.
-Creates entries in the Match table for both directions.
-Filters profiles by common interests to ensure a match is meaningful.
-Returns the matched profiles along with a success or failure status.
-
-
-* *********getMatches Function:
-Retrieves all matches for a specific user profile by checking both directions in the Match table.
-Filters out duplicates by comparing profile_id and match_profile_id.
-Returns the matched profiles along with relevant information like age, gender, location, and bio.
-Ensures the response contains unique matches.
-
-*/
