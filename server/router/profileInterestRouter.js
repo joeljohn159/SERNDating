@@ -19,4 +19,6 @@ profileInterestRouter.post('/', profileInterestController.addInterestToProfile);
  */
 profileInterestRouter.get('/:profile_id', profileInterestController.getInterestsByProfile);
 
+profileInterestRouter.post('/remove-interest', profileInterestController.removeInterestFromProfile);
+
 export default profileInterestRouter;

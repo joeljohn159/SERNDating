@@ -63,4 +63,41 @@ const getInterestsByProfile = async (req, res) => {
     }
 };
 
-export default { addInterestToProfile, getInterestsByProfile };
+// Remove Interest from Profile
+const removeInterestFromProfile = async (req, res) => {
+    try {
+        const { profile_id, interest_id } = req.body;
+
+        const profile = await Profile.findByPk(profile_id);
+        if (!profile) {
+            return res.status(404).json({ msg: 'Profile not found', status: 'FAILED' });
+        }
+
+        const interest = await Interest.findByPk(interest_id);
+        if (!interest) {
+            return res.status(404).json({ msg: 'Interest not found', status: 'FAILED' });
+        }
+
+        // Check if the interest is already associated with the profile
+        const isAssociated = await profile.hasInterest(interest);
+        if (!isAssociated) {
+            return res.status(400).json({
+                msg: 'Interest is not associated with this profile',
+                status: 'FAILED',
+            });
+        }
+
+        // Remove the association
+        await profile.removeInterest(interest);
+
+        return res.status(200).json({
+            msg: 'Interest removed from profile successfully',
+            status: 'SUCCESS',
+        });
+    } catch (error) {
+        return catchErrors(error, res);
+    }
+};
+
+
+export default { addInterestToProfile, getInterestsByProfile, removeInterestFromProfile };
