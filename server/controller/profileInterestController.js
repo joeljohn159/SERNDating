@@ -20,7 +20,10 @@ const addInterestToProfile = async (req, res) => {
         }
 
         // Associate the profile with the interests
-        await profile.setInterests(interests);
+        //await profile.setInterests(interests);
+
+        // Add a new record
+        await profile.addInterests(interests)
 
         return res.status(200).json({
             msg: 'Interests added to profile successfully',
