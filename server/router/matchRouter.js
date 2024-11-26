@@ -7,6 +7,6 @@ const matchRouter = express.Router();
 //matchRouter.post('/find', findMatches);
 
 // Route to get all matches for a profile
-matchRouter.post('/matches-list/:profile_id', getMatches);
+matchRouter.get('/matches-list/:profile_id', getMatches);
 
 export default matchRouter;
