@@ -1,32 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import leftProfileSample from '../assets/landing/Group2.svg';
 import rightProfileSample from '../assets/landing/Group4.svg';
 import lady from '../assets/landing/Group7.svg';
 import LT from '../assets/landing/LT.svg';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import AboutPopup from '../components/About';
 
 const Landing = () => {
+  const [isAboutPopupVisible, setAboutPopupVisible] = useState(false);
 
+  const handleShowAboutPopup = () => {
+    setAboutPopupVisible(true);
+  };
+
+  const handleCloseAboutPopup = () => {
+    setAboutPopupVisible(false);
+  };
 
   return (
-  <div
+    <div
       className="bg-cover bg-no-repeat bg-center relative bg-fixed h-screen w-screen overflow-hidden font-Nunito"
       style={{ backgroundImage: `url(${LT})` }}
     >
       {/* Navbar */}
       <nav className="flex justify-center items-center backdrop-blur-md bg-white bg-opacity-75 text-gray-900 py-5 shadow-lg fixed top-0 w-full z-10">
         <ul className="flex justify-between items-center space-x-8">
-          <Link to="/">
-            <li className="text-lg font-semibold cursor-pointer hover:bg-yellow-400 hover:bg-opacity-80 p-2 px-4 rounded-full transition-all">
-              Home
-            </li>
-          </Link>
-          <Link to="/">
-            <li className="text-lg font-semibold cursor-pointer hover:bg-yellow-400 hover:bg-opacity-80 p-2 px-4 rounded-full transition-all">
-              About
-            </li>
-          </Link>
+          <li
+            className="text-lg font-semibold cursor-pointer hover:bg-yellow-400 hover:bg-opacity-80 p-2 px-4 rounded-full transition-all"
+            onClick={handleShowAboutPopup}
+          >
+            About
+          </li>
           <Link to="/login">
             <li className="text-lg font-semibold cursor-pointer hover:bg-yellow-400 hover:bg-opacity-80 p-2 px-4 rounded-full transition-all">
               Meet People
@@ -36,7 +40,7 @@ const Landing = () => {
       </nav>
 
       {/* Main Content */}
-       <div className="flex flex-col justify-center items-center h-full text-center px-5 relative ">
+      <div className="flex flex-col justify-center items-center h-full text-center px-5 relative ">
         <h1 className="absolute text-7xl font-extrabold text-green-600 md:text-6xl sm:text-4xl z-5">
           Meet the
           <br />
@@ -62,10 +66,11 @@ const Landing = () => {
           />
         </div>
       </div>
-    </div>
-    )
 
+      {/* About Popup */}
+      <AboutPopup show={isAboutPopupVisible} onClose={handleCloseAboutPopup} />
+    </div>
+  );
 };
 
 export default Landing;
-
