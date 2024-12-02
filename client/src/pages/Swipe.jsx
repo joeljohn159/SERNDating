@@ -8,13 +8,13 @@ const SwipePage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [likedProfiles, setLikedProfiles] = useState([]);
   const [dislikedProfiles, setDislikedProfiles] = useState([]);
-  const [profiles, setProfiles] = useState([]); // State for storing fetched profiles
-  const [loading, setLoading] = useState(true); // State for loading indicator
-  const [error, setError] = useState(null); // State for error handling
-  const { user } = useAuth(); // Assuming the user context is available for other purposes
-  const [profileId, setProfileId] = useState(null); // Store profile ID
+  const [profiles, setProfiles] = useState([]);
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  const { user } = useAuth(); 
+  const [profileId, setProfileId] = useState(null); 
 
-  // Fetch the user's profile ID first
+  
 
   const FALLBACK_IMAGE = 'https://www.shutterstock.com/image-vector/blank-avatar-photo-placeholder-flat-600nw-1151124605.jpg';
 
@@ -37,25 +37,29 @@ const SwipePage = () => {
     fetchProfileId();
   }, []);
 
-  // Fetch matches once the profile ID is available
+  
   useEffect(() => {
-    if (!profileId) return; // Do not fetch matches if the profile ID is not yet available
+    if (!profileId) return;
 
     const fetchMatches = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/matches/matches-list/${profileId}`);
-        setProfiles(response.data.data); // Store profiles in state
-        console.log(response.data.data)
+
+        const filteredProfiles = response.data.data.filter(match => 
+          match.match_profile_id == profileId
+        );
+        setProfiles(filteredProfiles);
+        console.log(profiles, response)
       } catch (error) {
         setError('Failed to fetch matches.');
         console.error(error);
       } finally {
-        setLoading(false); // Stop loading once the API call is done
+        setLoading(false); 
       }
     };
 
     fetchMatches();
-  }, [profileId]); // This effect runs every time the profileId changes
+  }, [profileId]); 
 
   const handleSwipe = (direction, profileId) => {
     if (direction === 'right') {
@@ -66,11 +70,11 @@ const SwipePage = () => {
       toast.error('You disliked this profile.');
     }
 
-    // Remove the profile from the current display
+  
     setCurrentIndex(currentIndex + 1);
   };
 
-  // Fetch the current profile from the list
+ 
   const currentProfiles = Array.isArray(profiles) ? profiles : [];
 
   return (
@@ -89,12 +93,12 @@ const SwipePage = () => {
                 className="relative bg-white rounded-lg shadow-lg overflow-hidden"
               >
                 <img
-                  src={profile.image || FALLBACK_IMAGE} // Fallback to a placeholder if image is missing
+                  src={profile.image || FALLBACK_IMAGE}
                   alt={profile.name}
                   className="w-full h-56 object-cover"
                 />
                 <div className="p-4">
-                  <h2 className="text-xl font-bold">{profile.name || 'EMPTY'}, {profile.profile.gender}</h2>
+                  <h2 className="text-xl font-bold">{profile.name || ''} {profile.profile.gender}</h2>
                   <p className="text-gray-600">{profile.profile.age} years old</p>
                   <p className="mt-2">{profile.profile.bio}, {profile.profile.location} </p>
                 </div>
